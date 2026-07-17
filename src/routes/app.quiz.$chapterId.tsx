@@ -1,53 +1,60 @@
 import { createFileRoute, useNavigate, useParams, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ArrowLeft, ArrowRight, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { getChapter, generateQuiz } from "@/lib/mockData";
+import { useEffect, useState } from "react";
+import { getQuizQuestionsFn } from "@/fns/content.server";
+import { submitQuizFn } from "@/fns/progress.server";
 import { Card } from "@/components/ui-bits";
 
 export const Route = createFileRoute("/app/quiz/$chapterId")({
-  head: ({ params }) => ({ meta: [{ title: `Quiz : ${getChapter(params.chapterId)?.title ?? ""} — ExamFacile` }] }),
+  loader: ({ params }) => getQuizQuestionsFn({ data: { chapterId: params.chapterId } }),
+  head: ({ loaderData }) => ({ meta: [{ title: `Quiz : ${loaderData?.chapter.title ?? ""} — ExamFacile` }] }),
   component: Quiz,
 });
 
 function Quiz() {
   const { chapterId } = useParams({ from: "/app/quiz/$chapterId" });
-  const chapter = getChapter(chapterId);
+  const data = Route.useLoaderData();
   const navigate = useNavigate();
-  const questions = useMemo(() => (chapter ? generateQuiz(chapter) : []), [chapter]);
   const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(() => Array(questions.length).fill(-1));
+  const [answers, setAnswers] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [time, setTime] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (data) setAnswers(Array(data.questions.length).fill(-1));
+  }, [data]);
 
   useEffect(() => {
     const t = setInterval(() => setTime((s) => s + 1), 1000);
     return () => clearInterval(t);
   }, []);
 
-  if (!chapter || questions.length === 0) {
+  if (!data || data.questions.length === 0) {
     return <div className="p-8 text-center text-muted-foreground">Quiz indisponible.</div>;
   }
 
+  const { chapter, questions } = data;
   const q = questions[current];
   const progress = ((current + 1) / questions.length) * 100;
 
-  const next = () => {
-    if (selected === null) return;
+  const next = async () => {
+    if (selected === null || submitting) return;
     const newAnswers = [...answers];
-    if (newAnswers.length === 0) {
-      for (let i = 0; i < questions.length; i++) newAnswers.push(-1);
-    }
     newAnswers[current] = selected;
     setAnswers(newAnswers);
     setSelected(null);
+
     if (current + 1 >= questions.length) {
-      const score = newAnswers.reduce((acc, a, i) => acc + (a === questions[i].correct ? 1 : 0), 0);
-      sessionStorage.setItem("examfacile-quiz-result", JSON.stringify({
-        chapterId: chapter.id, chapterTitle: chapter.title, score, total: questions.length, time, answers: newAnswers,
-        questions: questions.map((qq) => ({ question: qq.question, options: qq.options, correct: qq.correct, explanation: qq.explanation })),
-      }));
-      navigate({ to: "/app/results" });
+      setSubmitting(true);
+      try {
+        const result = await submitQuizFn({ data: { chapterId, answers: newAnswers, timeSeconds: time } });
+        navigate({ to: "/app/results", search: { attemptId: result.attemptId } });
+      } catch (e) {
+        console.error(e);
+        setSubmitting(false);
+      }
     } else {
       setCurrent(current + 1);
     }
@@ -56,7 +63,7 @@ function Quiz() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <Link to="/app/lesson/$chapterId" params={{ chapterId: chapter.id }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="w-4 h-4" /> Retour à la leçon</Link>
+        <Link to="/app/lesson/$chapterId" params={{ chapterId }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="w-4 h-4" /> Retour à la leçon</Link>
         <div className="flex items-center gap-4 text-sm">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border"><Clock className="w-3.5 h-3.5" /> {formatTime(time)}</div>
           <Link to="/app/subjects" className="p-2 rounded-lg hover:bg-muted" aria-label="Quitter"><X className="w-4 h-4" /></Link>
@@ -77,15 +84,9 @@ function Quiz() {
             <h2 className="text-xl md:text-2xl font-semibold font-display mb-6">{q.question}</h2>
             <div className="space-y-3">
               {q.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelected(i)}
-                  className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selected === i ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
-                >
+                <button key={i} onClick={() => setSelected(i)} className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selected === i ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg grid place-items-center font-bold text-sm ${selected === i ? "gradient-brand text-white" : "bg-muted text-muted-foreground"}`}>
-                      {String.fromCharCode(65 + i)}
-                    </div>
+                    <div className={`w-8 h-8 rounded-lg grid place-items-center font-bold text-sm ${selected === i ? "gradient-brand text-white" : "bg-muted text-muted-foreground"}`}>{String.fromCharCode(65 + i)}</div>
                     <span className="flex-1">{opt}</span>
                   </div>
                 </button>
@@ -96,8 +97,8 @@ function Quiz() {
       </AnimatePresence>
 
       <div className="flex justify-end">
-        <button onClick={next} disabled={selected === null} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand text-white font-semibold shadow-glow disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] transition">
-          {current + 1 === questions.length ? "Terminer le quiz" : "Question suivante"} <ArrowRight className="w-4 h-4" />
+        <button onClick={next} disabled={selected === null || submitting} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand text-white font-semibold shadow-glow disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] transition">
+          {submitting ? "Enregistrement..." : current + 1 === questions.length ? "Terminer le quiz" : "Question suivante"} <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -1,8 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Edit2 } from "lucide-react";
-import { mockUser, levelName } from "@/lib/mockData";
+import { levelName } from "@/lib/gamification";
+import { updateProfileFn } from "@/fns/auth.server";
 import { Card, PageHeader, GradientButton } from "@/components/ui-bits";
+
+const SERIES = ["A1", "A2", "C", "D", "E", "F", "G", "H"] as const;
 
 export const Route = createFileRoute("/app/profile")({
   head: () => ({ meta: [{ title: "Profil — ExamFacile" }] }),
@@ -10,11 +13,25 @@ export const Route = createFileRoute("/app/profile")({
 });
 
 function Profile() {
+  const { user: ctxUser } = useRouteContext({ from: "/app" });
+  const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const [user, setUser] = useState(mockUser);
+  const [user, setUser] = useState(ctxUser);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
-  const save = () => { setEditing(false); setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  const save = async () => {
+    setError("");
+    try {
+      await updateProfileFn({ data: { name: user.name, email: user.email, series: user.series } });
+      setEditing(false);
+      setSaved(true);
+      await router.invalidate();
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur lors de l'enregistrement.");
+    }
+  };
 
   return (
     <div>
@@ -26,6 +43,7 @@ function Profile() {
           <h2 className="text-xl font-bold">{user.name}</h2>
           <p className="text-sm text-muted-foreground mb-4">{user.email}</p>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted text-xs font-semibold">Niv. {user.level} · {levelName(user.level)}</div>
+          <div className="mt-2 text-xs text-muted-foreground">Abonnement : {user.plan === "PREMIUM" ? "Premium" : "Gratuit"}</div>
 
           <div className="grid grid-cols-3 gap-2 mt-6 text-center">
             <div className="p-3 rounded-xl bg-muted/40">
@@ -50,15 +68,25 @@ function Profile() {
               <button onClick={() => setEditing(true)} className="inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline"><Edit2 className="w-4 h-4" /> Modifier</button>
             ) : saved && <span className="text-emerald-600 text-sm inline-flex items-center gap-1"><Check className="w-4 h-4" /> Enregistré</span>}
           </div>
+          {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
           <div className="space-y-4">
             <Row label="Nom complet" value={user.name} editing={editing} onChange={(v) => setUser({ ...user, name: v })} />
             <Row label="E-mail" value={user.email} editing={editing} onChange={(v) => setUser({ ...user, email: v })} />
-            <Row label="Série" value={user.series} editing={editing} onChange={(v) => setUser({ ...user, series: v })} />
+            {editing ? (
+              <div>
+                <label className="text-xs text-muted-foreground font-medium">Série</label>
+                <select value={user.series} onChange={(e) => setUser({ ...user, series: e.target.value })} className="w-full mt-1 px-4 py-3 rounded-xl border border-border focus:border-primary outline-none">
+                  {SERIES.map((s) => <option key={s} value={s}>Série {s}</option>)}
+                </select>
+              </div>
+            ) : (
+              <Row label="Série" value={user.series} editing={false} onChange={() => {}} />
+            )}
           </div>
           {editing && (
             <div className="flex gap-2 mt-6">
               <GradientButton onClick={save}>Enregistrer</GradientButton>
-              <button onClick={() => { setUser(mockUser); setEditing(false); }} className="px-6 py-3 rounded-xl bg-muted font-semibold hover:bg-muted/70">Annuler</button>
+              <button onClick={() => { setUser(ctxUser); setEditing(false); }} className="px-6 py-3 rounded-xl bg-muted font-semibold hover:bg-muted/70">Annuler</button>
             </div>
           )}
         </Card>

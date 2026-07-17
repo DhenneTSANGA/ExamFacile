@@ -66,7 +66,7 @@ function Landing() {
         <div className="absolute top-20 -right-32 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4 text-primary" />
               Votre compagnon de révision boosté par l'IA
@@ -87,7 +87,7 @@ function Landing() {
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.1 }} className="relative">
+          <motion.div initial={false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.1 }} className="relative">
             <div className="relative aspect-[4/5] rounded-3xl gradient-brand p-1 shadow-glow">
               <div className="w-full h-full rounded-[1.4rem] bg-card p-6 flex flex-col">
                 <div className="flex items-center justify-between mb-6">

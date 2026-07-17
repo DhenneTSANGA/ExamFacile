@@ -1,41 +1,39 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { CheckCircle2, XCircle, Clock, Trophy, RotateCcw, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from "recharts";
+import { getQuizResultFn } from "@/fns/progress.server";
 import { Card, PageHeader } from "@/components/ui-bits";
 
-type Result = {
-  chapterId: string;
-  chapterTitle: string;
-  score: number;
-  total: number;
-  time: number;
-  answers: number[];
-  questions: { question: string; options: string[]; correct: number; explanation: string }[];
-};
+type ResultsSearch = { attemptId?: string };
 
 export const Route = createFileRoute("/app/results")({
+  validateSearch: (search: Record<string, unknown>): ResultsSearch => ({
+    attemptId: typeof search.attemptId === "string" ? search.attemptId : undefined,
+  }),
+  loaderDeps: ({ search }) => ({ attemptId: search.attemptId }),
+  loader: ({ deps }) => {
+    if (!deps.attemptId) throw redirect({ to: "/app/subjects" });
+    return getQuizResultFn({ data: { attemptId: deps.attemptId } });
+  },
   head: () => ({ meta: [{ title: "Résultats du quiz — ExamFacile" }] }),
   component: Results,
 });
 
 function Results() {
-  const navigate = useNavigate();
-  const [result, setResult] = useState<Result | null>(null);
+  const result = Route.useLoaderData();
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("examfacile-quiz-result");
-    if (!raw) { navigate({ to: "/app/subjects" }); return; }
-    const r: Result = JSON.parse(raw);
-    setResult(r);
-    if (r.score / r.total >= 0.7) {
+    if (result && result.score / result.total >= 0.7) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#2563EB", "#7C3AED", "#10B981"] });
     }
-  }, [navigate]);
+  }, [result]);
 
-  if (!result) return null;
+  if (!result) {
+    return <div className="p-8 text-center text-muted-foreground">Résultat introuvable.</div>;
+  }
 
   const pct = Math.round((result.score / result.total) * 100);
   const chartData = [{ name: "score", value: pct, fill: pct >= 70 ? "#10B981" : pct >= 50 ? "#F59E0B" : "#EF4444" }];

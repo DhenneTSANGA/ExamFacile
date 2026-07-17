@@ -1,22 +1,24 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Clock, CheckCircle2, Circle, Play, ArrowLeft } from "lucide-react";
-import { subjects, chapters } from "@/lib/mockData";
+import { getSubjectChaptersFn } from "@/fns/content.server";
 import { Card, PageHeader, ProgressBar } from "@/components/ui-bits";
 
 export const Route = createFileRoute("/app/subjects/$id")({
-  head: ({ params }) => ({ meta: [{ title: `${subjects.find((s) => s.id === params.id)?.name ?? "Matière"} — ExamFacile` }] }),
+  loader: ({ params }) => getSubjectChaptersFn({ data: { subjectId: params.id } }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.subject.name ?? "Matière"} — ExamFacile` }] }),
   component: SubjectDetail,
 });
 
 function SubjectDetail() {
   const { id } = useParams({ from: "/app/subjects/$id" });
-  const subject = subjects.find((s) => s.id === id);
-  const chapterList = chapters[id] ?? [];
+  const data = Route.useLoaderData();
 
-  if (!subject) {
+  if (!data) {
     return <div className="p-8 text-center text-muted-foreground">Matière introuvable.</div>;
   }
+
+  const { subject, chapters: chapterList } = data;
 
   return (
     <div>
@@ -30,7 +32,7 @@ function SubjectDetail() {
 
       <div className="space-y-3">
         {chapterList.map((c, i) => (
-          <motion.div key={c.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>
+          <motion.div key={c.id} initial={false} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>
             <Card hover className="p-5 flex items-center gap-4">
               <div className="w-10 h-10 shrink-0 grid place-items-center">
                 {c.completed ? <CheckCircle2 className="w-7 h-7 text-emerald-500" /> : <Circle className="w-7 h-7 text-muted-foreground" />}
@@ -44,10 +46,12 @@ function SubjectDetail() {
                 <div className="font-semibold mb-2 truncate">{c.title}</div>
                 <ProgressBar value={c.progress} />
               </div>
-              <Link to="/app/lesson/$chapterId" params={{ chapterId: c.id }} className="shrink-0">
-                <button className="inline-flex items-center gap-2 px-4 py-2 rounded-xl gradient-brand text-white text-sm font-semibold shadow-soft hover:scale-105 transition-transform">
-                  <Play className="w-4 h-4" /> {c.progress > 0 ? "Continuer" : "Commencer"}
-                </button>
+              <Link
+                to="/app/lesson/$chapterId"
+                params={{ chapterId: c.id }}
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl gradient-brand text-white text-sm font-semibold shadow-soft hover:scale-105 transition-transform"
+              >
+                <Play className="w-4 h-4" /> {c.progress > 0 ? "Continuer" : "Commencer"}
               </Link>
             </Card>
           </motion.div>

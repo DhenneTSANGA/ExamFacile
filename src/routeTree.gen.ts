@@ -13,8 +13,10 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AppSubjectsRouteImport } from './routes/app.subjects'
 import { Route as AppResultsRouteImport } from './routes/app.results'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
@@ -22,10 +24,49 @@ import { Route as AppPremiumRouteImport } from './routes/app.premium'
 import { Route as AppLeaderboardRouteImport } from './routes/app.leaderboard'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppAchievementsRouteImport } from './routes/app.achievements'
+import { Route as ApiUsersRouteImport } from './routes/api.users'
+import { Route as ApiUserBadgesRouteImport } from './routes/api.user-badges'
+import { Route as ApiSubscriptionsRouteImport } from './routes/api.subscriptions'
+import { Route as ApiSubjectsRouteImport } from './routes/api.subjects'
+import { Route as ApiStudyGuidesRouteImport } from './routes/api.study-guides'
+import { Route as ApiStudyGuideDefinitionsRouteImport } from './routes/api.study-guide-definitions'
+import { Route as ApiQuizAttemptsRouteImport } from './routes/api.quiz-attempts'
+import { Route as ApiQuizAnswersRouteImport } from './routes/api.quiz-answers'
+import { Route as ApiQuestionsRouteImport } from './routes/api.questions'
+import { Route as ApiLessonsRouteImport } from './routes/api.lessons'
+import { Route as ApiLessonSectionsRouteImport } from './routes/api.lesson-sections'
+import { Route as ApiDailyStatsRouteImport } from './routes/api.daily-stats'
+import { Route as ApiChaptersRouteImport } from './routes/api.chapters'
+import { Route as ApiChapterProgressRouteImport } from './routes/api.chapter-progress'
+import { Route as ApiBadgesRouteImport } from './routes/api.badges'
+import { Route as ApiActivitiesRouteImport } from './routes/api.activities'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSubjectsRouteImport } from './routes/admin.subjects'
+import { Route as AdminBadgesRouteImport } from './routes/admin.badges'
+import { Route as AppSubjectsIndexRouteImport } from './routes/app.subjects.index'
+import { Route as AdminSubjectsIndexRouteImport } from './routes/admin.subjects.index'
 import { Route as AppSubjectsIdRouteImport } from './routes/app.subjects.$id'
 import { Route as AppStudyGuideChapterIdRouteImport } from './routes/app.study-guide.$chapterId'
 import { Route as AppQuizChapterIdRouteImport } from './routes/app.quiz.$chapterId'
 import { Route as AppLessonChapterIdRouteImport } from './routes/app.lesson.$chapterId'
+import { Route as ApiUsersIdRouteImport } from './routes/api.users.$id'
+import { Route as ApiUserBadgesIdRouteImport } from './routes/api.user-badges.$id'
+import { Route as ApiSubscriptionsIdRouteImport } from './routes/api.subscriptions.$id'
+import { Route as ApiSubjectsIdRouteImport } from './routes/api.subjects.$id'
+import { Route as ApiStudyGuidesIdRouteImport } from './routes/api.study-guides.$id'
+import { Route as ApiStudyGuideDefinitionsIdRouteImport } from './routes/api.study-guide-definitions.$id'
+import { Route as ApiQuizAttemptsIdRouteImport } from './routes/api.quiz-attempts.$id'
+import { Route as ApiQuizAnswersIdRouteImport } from './routes/api.quiz-answers.$id'
+import { Route as ApiQuestionsIdRouteImport } from './routes/api.questions.$id'
+import { Route as ApiLessonsIdRouteImport } from './routes/api.lessons.$id'
+import { Route as ApiLessonSectionsIdRouteImport } from './routes/api.lesson-sections.$id'
+import { Route as ApiDailyStatsIdRouteImport } from './routes/api.daily-stats.$id'
+import { Route as ApiChaptersIdRouteImport } from './routes/api.chapters.$id'
+import { Route as ApiChapterProgressIdRouteImport } from './routes/api.chapter-progress.$id'
+import { Route as ApiBadgesIdRouteImport } from './routes/api.badges.$id'
+import { Route as ApiActivitiesIdRouteImport } from './routes/api.activities.$id'
+import { Route as AdminSubjectsIdRouteImport } from './routes/admin.subjects.$id'
+import { Route as AdminChaptersIdRouteImport } from './routes/admin.chapters.$id'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -47,6 +88,11 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -56,6 +102,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AppSubjectsRoute = AppSubjectsRouteImport.update({
   id: '/subjects',
@@ -92,6 +143,112 @@ const AppAchievementsRoute = AppAchievementsRouteImport.update({
   path: '/achievements',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiUsersRoute = ApiUsersRouteImport.update({
+  id: '/api/users',
+  path: '/api/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUserBadgesRoute = ApiUserBadgesRouteImport.update({
+  id: '/api/user-badges',
+  path: '/api/user-badges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSubscriptionsRoute = ApiSubscriptionsRouteImport.update({
+  id: '/api/subscriptions',
+  path: '/api/subscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSubjectsRoute = ApiSubjectsRouteImport.update({
+  id: '/api/subjects',
+  path: '/api/subjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStudyGuidesRoute = ApiStudyGuidesRouteImport.update({
+  id: '/api/study-guides',
+  path: '/api/study-guides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStudyGuideDefinitionsRoute =
+  ApiStudyGuideDefinitionsRouteImport.update({
+    id: '/api/study-guide-definitions',
+    path: '/api/study-guide-definitions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiQuizAttemptsRoute = ApiQuizAttemptsRouteImport.update({
+  id: '/api/quiz-attempts',
+  path: '/api/quiz-attempts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizAnswersRoute = ApiQuizAnswersRouteImport.update({
+  id: '/api/quiz-answers',
+  path: '/api/quiz-answers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuestionsRoute = ApiQuestionsRouteImport.update({
+  id: '/api/questions',
+  path: '/api/questions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLessonsRoute = ApiLessonsRouteImport.update({
+  id: '/api/lessons',
+  path: '/api/lessons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLessonSectionsRoute = ApiLessonSectionsRouteImport.update({
+  id: '/api/lesson-sections',
+  path: '/api/lesson-sections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDailyStatsRoute = ApiDailyStatsRouteImport.update({
+  id: '/api/daily-stats',
+  path: '/api/daily-stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChaptersRoute = ApiChaptersRouteImport.update({
+  id: '/api/chapters',
+  path: '/api/chapters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChapterProgressRoute = ApiChapterProgressRouteImport.update({
+  id: '/api/chapter-progress',
+  path: '/api/chapter-progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBadgesRoute = ApiBadgesRouteImport.update({
+  id: '/api/badges',
+  path: '/api/badges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiActivitiesRoute = ApiActivitiesRouteImport.update({
+  id: '/api/activities',
+  path: '/api/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubjectsRoute = AdminSubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBadgesRoute = AdminBadgesRouteImport.update({
+  id: '/badges',
+  path: '/badges',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppSubjectsIndexRoute = AppSubjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSubjectsRoute,
+} as any)
+const AdminSubjectsIndexRoute = AdminSubjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminSubjectsRoute,
+} as any)
 const AppSubjectsIdRoute = AppSubjectsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -112,13 +269,124 @@ const AppLessonChapterIdRoute = AppLessonChapterIdRouteImport.update({
   path: '/lesson/$chapterId',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiUsersIdRoute = ApiUsersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiUsersRoute,
+} as any)
+const ApiUserBadgesIdRoute = ApiUserBadgesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiUserBadgesRoute,
+} as any)
+const ApiSubscriptionsIdRoute = ApiSubscriptionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiSubscriptionsRoute,
+} as any)
+const ApiSubjectsIdRoute = ApiSubjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiSubjectsRoute,
+} as any)
+const ApiStudyGuidesIdRoute = ApiStudyGuidesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiStudyGuidesRoute,
+} as any)
+const ApiStudyGuideDefinitionsIdRoute =
+  ApiStudyGuideDefinitionsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => ApiStudyGuideDefinitionsRoute,
+  } as any)
+const ApiQuizAttemptsIdRoute = ApiQuizAttemptsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiQuizAttemptsRoute,
+} as any)
+const ApiQuizAnswersIdRoute = ApiQuizAnswersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiQuizAnswersRoute,
+} as any)
+const ApiQuestionsIdRoute = ApiQuestionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiQuestionsRoute,
+} as any)
+const ApiLessonsIdRoute = ApiLessonsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiLessonsRoute,
+} as any)
+const ApiLessonSectionsIdRoute = ApiLessonSectionsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiLessonSectionsRoute,
+} as any)
+const ApiDailyStatsIdRoute = ApiDailyStatsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiDailyStatsRoute,
+} as any)
+const ApiChaptersIdRoute = ApiChaptersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiChaptersRoute,
+} as any)
+const ApiChapterProgressIdRoute = ApiChapterProgressIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiChapterProgressRoute,
+} as any)
+const ApiBadgesIdRoute = ApiBadgesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiBadgesRoute,
+} as any)
+const ApiActivitiesIdRoute = ApiActivitiesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiActivitiesRoute,
+} as any)
+const AdminSubjectsIdRoute = AdminSubjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminSubjectsRoute,
+} as any)
+const AdminChaptersIdRoute = AdminChaptersIdRouteImport.update({
+  id: '/chapters/$id',
+  path: '/chapters/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/subjects': typeof AdminSubjectsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/api/activities': typeof ApiActivitiesRouteWithChildren
+  '/api/badges': typeof ApiBadgesRouteWithChildren
+  '/api/chapter-progress': typeof ApiChapterProgressRouteWithChildren
+  '/api/chapters': typeof ApiChaptersRouteWithChildren
+  '/api/daily-stats': typeof ApiDailyStatsRouteWithChildren
+  '/api/lesson-sections': typeof ApiLessonSectionsRouteWithChildren
+  '/api/lessons': typeof ApiLessonsRouteWithChildren
+  '/api/questions': typeof ApiQuestionsRouteWithChildren
+  '/api/quiz-answers': typeof ApiQuizAnswersRouteWithChildren
+  '/api/quiz-attempts': typeof ApiQuizAttemptsRouteWithChildren
+  '/api/study-guide-definitions': typeof ApiStudyGuideDefinitionsRouteWithChildren
+  '/api/study-guides': typeof ApiStudyGuidesRouteWithChildren
+  '/api/subjects': typeof ApiSubjectsRouteWithChildren
+  '/api/subscriptions': typeof ApiSubscriptionsRouteWithChildren
+  '/api/user-badges': typeof ApiUserBadgesRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
   '/app/achievements': typeof AppAchievementsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/leaderboard': typeof AppLeaderboardRoute
@@ -126,37 +394,116 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AppProfileRoute
   '/app/results': typeof AppResultsRoute
   '/app/subjects': typeof AppSubjectsRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/chapters/$id': typeof AdminChaptersIdRoute
+  '/admin/subjects/$id': typeof AdminSubjectsIdRoute
+  '/api/activities/$id': typeof ApiActivitiesIdRoute
+  '/api/badges/$id': typeof ApiBadgesIdRoute
+  '/api/chapter-progress/$id': typeof ApiChapterProgressIdRoute
+  '/api/chapters/$id': typeof ApiChaptersIdRoute
+  '/api/daily-stats/$id': typeof ApiDailyStatsIdRoute
+  '/api/lesson-sections/$id': typeof ApiLessonSectionsIdRoute
+  '/api/lessons/$id': typeof ApiLessonsIdRoute
+  '/api/questions/$id': typeof ApiQuestionsIdRoute
+  '/api/quiz-answers/$id': typeof ApiQuizAnswersIdRoute
+  '/api/quiz-attempts/$id': typeof ApiQuizAttemptsIdRoute
+  '/api/study-guide-definitions/$id': typeof ApiStudyGuideDefinitionsIdRoute
+  '/api/study-guides/$id': typeof ApiStudyGuidesIdRoute
+  '/api/subjects/$id': typeof ApiSubjectsIdRoute
+  '/api/subscriptions/$id': typeof ApiSubscriptionsIdRoute
+  '/api/user-badges/$id': typeof ApiUserBadgesIdRoute
+  '/api/users/$id': typeof ApiUsersIdRoute
   '/app/lesson/$chapterId': typeof AppLessonChapterIdRoute
   '/app/quiz/$chapterId': typeof AppQuizChapterIdRoute
   '/app/study-guide/$chapterId': typeof AppStudyGuideChapterIdRoute
   '/app/subjects/$id': typeof AppSubjectsIdRoute
+  '/admin/subjects/': typeof AdminSubjectsIndexRoute
+  '/app/subjects/': typeof AppSubjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/activities': typeof ApiActivitiesRouteWithChildren
+  '/api/badges': typeof ApiBadgesRouteWithChildren
+  '/api/chapter-progress': typeof ApiChapterProgressRouteWithChildren
+  '/api/chapters': typeof ApiChaptersRouteWithChildren
+  '/api/daily-stats': typeof ApiDailyStatsRouteWithChildren
+  '/api/lesson-sections': typeof ApiLessonSectionsRouteWithChildren
+  '/api/lessons': typeof ApiLessonsRouteWithChildren
+  '/api/questions': typeof ApiQuestionsRouteWithChildren
+  '/api/quiz-answers': typeof ApiQuizAnswersRouteWithChildren
+  '/api/quiz-attempts': typeof ApiQuizAttemptsRouteWithChildren
+  '/api/study-guide-definitions': typeof ApiStudyGuideDefinitionsRouteWithChildren
+  '/api/study-guides': typeof ApiStudyGuidesRouteWithChildren
+  '/api/subjects': typeof ApiSubjectsRouteWithChildren
+  '/api/subscriptions': typeof ApiSubscriptionsRouteWithChildren
+  '/api/user-badges': typeof ApiUserBadgesRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
   '/app/achievements': typeof AppAchievementsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/leaderboard': typeof AppLeaderboardRoute
   '/app/premium': typeof AppPremiumRoute
   '/app/profile': typeof AppProfileRoute
   '/app/results': typeof AppResultsRoute
-  '/app/subjects': typeof AppSubjectsRouteWithChildren
+  '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/admin/chapters/$id': typeof AdminChaptersIdRoute
+  '/admin/subjects/$id': typeof AdminSubjectsIdRoute
+  '/api/activities/$id': typeof ApiActivitiesIdRoute
+  '/api/badges/$id': typeof ApiBadgesIdRoute
+  '/api/chapter-progress/$id': typeof ApiChapterProgressIdRoute
+  '/api/chapters/$id': typeof ApiChaptersIdRoute
+  '/api/daily-stats/$id': typeof ApiDailyStatsIdRoute
+  '/api/lesson-sections/$id': typeof ApiLessonSectionsIdRoute
+  '/api/lessons/$id': typeof ApiLessonsIdRoute
+  '/api/questions/$id': typeof ApiQuestionsIdRoute
+  '/api/quiz-answers/$id': typeof ApiQuizAnswersIdRoute
+  '/api/quiz-attempts/$id': typeof ApiQuizAttemptsIdRoute
+  '/api/study-guide-definitions/$id': typeof ApiStudyGuideDefinitionsIdRoute
+  '/api/study-guides/$id': typeof ApiStudyGuidesIdRoute
+  '/api/subjects/$id': typeof ApiSubjectsIdRoute
+  '/api/subscriptions/$id': typeof ApiSubscriptionsIdRoute
+  '/api/user-badges/$id': typeof ApiUserBadgesIdRoute
+  '/api/users/$id': typeof ApiUsersIdRoute
   '/app/lesson/$chapterId': typeof AppLessonChapterIdRoute
   '/app/quiz/$chapterId': typeof AppQuizChapterIdRoute
   '/app/study-guide/$chapterId': typeof AppStudyGuideChapterIdRoute
   '/app/subjects/$id': typeof AppSubjectsIdRoute
+  '/admin/subjects': typeof AdminSubjectsIndexRoute
+  '/app/subjects': typeof AppSubjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/badges': typeof AdminBadgesRoute
+  '/admin/subjects': typeof AdminSubjectsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/api/activities': typeof ApiActivitiesRouteWithChildren
+  '/api/badges': typeof ApiBadgesRouteWithChildren
+  '/api/chapter-progress': typeof ApiChapterProgressRouteWithChildren
+  '/api/chapters': typeof ApiChaptersRouteWithChildren
+  '/api/daily-stats': typeof ApiDailyStatsRouteWithChildren
+  '/api/lesson-sections': typeof ApiLessonSectionsRouteWithChildren
+  '/api/lessons': typeof ApiLessonsRouteWithChildren
+  '/api/questions': typeof ApiQuestionsRouteWithChildren
+  '/api/quiz-answers': typeof ApiQuizAnswersRouteWithChildren
+  '/api/quiz-attempts': typeof ApiQuizAttemptsRouteWithChildren
+  '/api/study-guide-definitions': typeof ApiStudyGuideDefinitionsRouteWithChildren
+  '/api/study-guides': typeof ApiStudyGuidesRouteWithChildren
+  '/api/subjects': typeof ApiSubjectsRouteWithChildren
+  '/api/subscriptions': typeof ApiSubscriptionsRouteWithChildren
+  '/api/user-badges': typeof ApiUserBadgesRouteWithChildren
+  '/api/users': typeof ApiUsersRouteWithChildren
   '/app/achievements': typeof AppAchievementsRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/leaderboard': typeof AppLeaderboardRoute
@@ -164,20 +511,61 @@ export interface FileRoutesById {
   '/app/profile': typeof AppProfileRoute
   '/app/results': typeof AppResultsRoute
   '/app/subjects': typeof AppSubjectsRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/chapters/$id': typeof AdminChaptersIdRoute
+  '/admin/subjects/$id': typeof AdminSubjectsIdRoute
+  '/api/activities/$id': typeof ApiActivitiesIdRoute
+  '/api/badges/$id': typeof ApiBadgesIdRoute
+  '/api/chapter-progress/$id': typeof ApiChapterProgressIdRoute
+  '/api/chapters/$id': typeof ApiChaptersIdRoute
+  '/api/daily-stats/$id': typeof ApiDailyStatsIdRoute
+  '/api/lesson-sections/$id': typeof ApiLessonSectionsIdRoute
+  '/api/lessons/$id': typeof ApiLessonsIdRoute
+  '/api/questions/$id': typeof ApiQuestionsIdRoute
+  '/api/quiz-answers/$id': typeof ApiQuizAnswersIdRoute
+  '/api/quiz-attempts/$id': typeof ApiQuizAttemptsIdRoute
+  '/api/study-guide-definitions/$id': typeof ApiStudyGuideDefinitionsIdRoute
+  '/api/study-guides/$id': typeof ApiStudyGuidesIdRoute
+  '/api/subjects/$id': typeof ApiSubjectsIdRoute
+  '/api/subscriptions/$id': typeof ApiSubscriptionsIdRoute
+  '/api/user-badges/$id': typeof ApiUserBadgesIdRoute
+  '/api/users/$id': typeof ApiUsersIdRoute
   '/app/lesson/$chapterId': typeof AppLessonChapterIdRoute
   '/app/quiz/$chapterId': typeof AppQuizChapterIdRoute
   '/app/study-guide/$chapterId': typeof AppStudyGuideChapterIdRoute
   '/app/subjects/$id': typeof AppSubjectsIdRoute
+  '/admin/subjects/': typeof AdminSubjectsIndexRoute
+  '/app/subjects/': typeof AppSubjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/app'
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/admin/badges'
+    | '/admin/subjects'
+    | '/admin/users'
+    | '/api/activities'
+    | '/api/badges'
+    | '/api/chapter-progress'
+    | '/api/chapters'
+    | '/api/daily-stats'
+    | '/api/lesson-sections'
+    | '/api/lessons'
+    | '/api/questions'
+    | '/api/quiz-answers'
+    | '/api/quiz-attempts'
+    | '/api/study-guide-definitions'
+    | '/api/study-guides'
+    | '/api/subjects'
+    | '/api/subscriptions'
+    | '/api/user-badges'
+    | '/api/users'
     | '/app/achievements'
     | '/app/dashboard'
     | '/app/leaderboard'
@@ -185,36 +573,115 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/results'
     | '/app/subjects'
+    | '/admin/'
     | '/app/'
+    | '/admin/chapters/$id'
+    | '/admin/subjects/$id'
+    | '/api/activities/$id'
+    | '/api/badges/$id'
+    | '/api/chapter-progress/$id'
+    | '/api/chapters/$id'
+    | '/api/daily-stats/$id'
+    | '/api/lesson-sections/$id'
+    | '/api/lessons/$id'
+    | '/api/questions/$id'
+    | '/api/quiz-answers/$id'
+    | '/api/quiz-attempts/$id'
+    | '/api/study-guide-definitions/$id'
+    | '/api/study-guides/$id'
+    | '/api/subjects/$id'
+    | '/api/subscriptions/$id'
+    | '/api/user-badges/$id'
+    | '/api/users/$id'
     | '/app/lesson/$chapterId'
     | '/app/quiz/$chapterId'
     | '/app/study-guide/$chapterId'
     | '/app/subjects/$id'
+    | '/admin/subjects/'
+    | '/app/subjects/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/admin/badges'
+    | '/admin/users'
+    | '/api/activities'
+    | '/api/badges'
+    | '/api/chapter-progress'
+    | '/api/chapters'
+    | '/api/daily-stats'
+    | '/api/lesson-sections'
+    | '/api/lessons'
+    | '/api/questions'
+    | '/api/quiz-answers'
+    | '/api/quiz-attempts'
+    | '/api/study-guide-definitions'
+    | '/api/study-guides'
+    | '/api/subjects'
+    | '/api/subscriptions'
+    | '/api/user-badges'
+    | '/api/users'
     | '/app/achievements'
     | '/app/dashboard'
     | '/app/leaderboard'
     | '/app/premium'
     | '/app/profile'
     | '/app/results'
-    | '/app/subjects'
+    | '/admin'
     | '/app'
+    | '/admin/chapters/$id'
+    | '/admin/subjects/$id'
+    | '/api/activities/$id'
+    | '/api/badges/$id'
+    | '/api/chapter-progress/$id'
+    | '/api/chapters/$id'
+    | '/api/daily-stats/$id'
+    | '/api/lesson-sections/$id'
+    | '/api/lessons/$id'
+    | '/api/questions/$id'
+    | '/api/quiz-answers/$id'
+    | '/api/quiz-attempts/$id'
+    | '/api/study-guide-definitions/$id'
+    | '/api/study-guides/$id'
+    | '/api/subjects/$id'
+    | '/api/subscriptions/$id'
+    | '/api/user-badges/$id'
+    | '/api/users/$id'
     | '/app/lesson/$chapterId'
     | '/app/quiz/$chapterId'
     | '/app/study-guide/$chapterId'
     | '/app/subjects/$id'
+    | '/admin/subjects'
+    | '/app/subjects'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/app'
     | '/forgot-password'
     | '/login'
     | '/register'
+    | '/admin/badges'
+    | '/admin/subjects'
+    | '/admin/users'
+    | '/api/activities'
+    | '/api/badges'
+    | '/api/chapter-progress'
+    | '/api/chapters'
+    | '/api/daily-stats'
+    | '/api/lesson-sections'
+    | '/api/lessons'
+    | '/api/questions'
+    | '/api/quiz-answers'
+    | '/api/quiz-attempts'
+    | '/api/study-guide-definitions'
+    | '/api/study-guides'
+    | '/api/subjects'
+    | '/api/subscriptions'
+    | '/api/user-badges'
+    | '/api/users'
     | '/app/achievements'
     | '/app/dashboard'
     | '/app/leaderboard'
@@ -222,19 +689,57 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/app/results'
     | '/app/subjects'
+    | '/admin/'
     | '/app/'
+    | '/admin/chapters/$id'
+    | '/admin/subjects/$id'
+    | '/api/activities/$id'
+    | '/api/badges/$id'
+    | '/api/chapter-progress/$id'
+    | '/api/chapters/$id'
+    | '/api/daily-stats/$id'
+    | '/api/lesson-sections/$id'
+    | '/api/lessons/$id'
+    | '/api/questions/$id'
+    | '/api/quiz-answers/$id'
+    | '/api/quiz-attempts/$id'
+    | '/api/study-guide-definitions/$id'
+    | '/api/study-guides/$id'
+    | '/api/subjects/$id'
+    | '/api/subscriptions/$id'
+    | '/api/user-badges/$id'
+    | '/api/users/$id'
     | '/app/lesson/$chapterId'
     | '/app/quiz/$chapterId'
     | '/app/study-guide/$chapterId'
     | '/app/subjects/$id'
+    | '/admin/subjects/'
+    | '/app/subjects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ApiActivitiesRoute: typeof ApiActivitiesRouteWithChildren
+  ApiBadgesRoute: typeof ApiBadgesRouteWithChildren
+  ApiChapterProgressRoute: typeof ApiChapterProgressRouteWithChildren
+  ApiChaptersRoute: typeof ApiChaptersRouteWithChildren
+  ApiDailyStatsRoute: typeof ApiDailyStatsRouteWithChildren
+  ApiLessonSectionsRoute: typeof ApiLessonSectionsRouteWithChildren
+  ApiLessonsRoute: typeof ApiLessonsRouteWithChildren
+  ApiQuestionsRoute: typeof ApiQuestionsRouteWithChildren
+  ApiQuizAnswersRoute: typeof ApiQuizAnswersRouteWithChildren
+  ApiQuizAttemptsRoute: typeof ApiQuizAttemptsRouteWithChildren
+  ApiStudyGuideDefinitionsRoute: typeof ApiStudyGuideDefinitionsRouteWithChildren
+  ApiStudyGuidesRoute: typeof ApiStudyGuidesRouteWithChildren
+  ApiSubjectsRoute: typeof ApiSubjectsRouteWithChildren
+  ApiSubscriptionsRoute: typeof ApiSubscriptionsRouteWithChildren
+  ApiUserBadgesRoute: typeof ApiUserBadgesRouteWithChildren
+  ApiUsersRoute: typeof ApiUsersRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -267,6 +772,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -280,6 +792,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/app/subjects': {
       id: '/app/subjects'
@@ -330,6 +849,153 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAchievementsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/users': {
+      id: '/api/users'
+      path: '/api/users'
+      fullPath: '/api/users'
+      preLoaderRoute: typeof ApiUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/user-badges': {
+      id: '/api/user-badges'
+      path: '/api/user-badges'
+      fullPath: '/api/user-badges'
+      preLoaderRoute: typeof ApiUserBadgesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/subscriptions': {
+      id: '/api/subscriptions'
+      path: '/api/subscriptions'
+      fullPath: '/api/subscriptions'
+      preLoaderRoute: typeof ApiSubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/subjects': {
+      id: '/api/subjects'
+      path: '/api/subjects'
+      fullPath: '/api/subjects'
+      preLoaderRoute: typeof ApiSubjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/study-guides': {
+      id: '/api/study-guides'
+      path: '/api/study-guides'
+      fullPath: '/api/study-guides'
+      preLoaderRoute: typeof ApiStudyGuidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/study-guide-definitions': {
+      id: '/api/study-guide-definitions'
+      path: '/api/study-guide-definitions'
+      fullPath: '/api/study-guide-definitions'
+      preLoaderRoute: typeof ApiStudyGuideDefinitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quiz-attempts': {
+      id: '/api/quiz-attempts'
+      path: '/api/quiz-attempts'
+      fullPath: '/api/quiz-attempts'
+      preLoaderRoute: typeof ApiQuizAttemptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quiz-answers': {
+      id: '/api/quiz-answers'
+      path: '/api/quiz-answers'
+      fullPath: '/api/quiz-answers'
+      preLoaderRoute: typeof ApiQuizAnswersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/questions': {
+      id: '/api/questions'
+      path: '/api/questions'
+      fullPath: '/api/questions'
+      preLoaderRoute: typeof ApiQuestionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/lessons': {
+      id: '/api/lessons'
+      path: '/api/lessons'
+      fullPath: '/api/lessons'
+      preLoaderRoute: typeof ApiLessonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/lesson-sections': {
+      id: '/api/lesson-sections'
+      path: '/api/lesson-sections'
+      fullPath: '/api/lesson-sections'
+      preLoaderRoute: typeof ApiLessonSectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/daily-stats': {
+      id: '/api/daily-stats'
+      path: '/api/daily-stats'
+      fullPath: '/api/daily-stats'
+      preLoaderRoute: typeof ApiDailyStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chapters': {
+      id: '/api/chapters'
+      path: '/api/chapters'
+      fullPath: '/api/chapters'
+      preLoaderRoute: typeof ApiChaptersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chapter-progress': {
+      id: '/api/chapter-progress'
+      path: '/api/chapter-progress'
+      fullPath: '/api/chapter-progress'
+      preLoaderRoute: typeof ApiChapterProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/badges': {
+      id: '/api/badges'
+      path: '/api/badges'
+      fullPath: '/api/badges'
+      preLoaderRoute: typeof ApiBadgesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/activities': {
+      id: '/api/activities'
+      path: '/api/activities'
+      fullPath: '/api/activities'
+      preLoaderRoute: typeof ApiActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subjects': {
+      id: '/admin/subjects'
+      path: '/subjects'
+      fullPath: '/admin/subjects'
+      preLoaderRoute: typeof AdminSubjectsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/badges': {
+      id: '/admin/badges'
+      path: '/badges'
+      fullPath: '/admin/badges'
+      preLoaderRoute: typeof AdminBadgesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/app/subjects/': {
+      id: '/app/subjects/'
+      path: '/'
+      fullPath: '/app/subjects/'
+      preLoaderRoute: typeof AppSubjectsIndexRouteImport
+      parentRoute: typeof AppSubjectsRoute
+    }
+    '/admin/subjects/': {
+      id: '/admin/subjects/'
+      path: '/'
+      fullPath: '/admin/subjects/'
+      preLoaderRoute: typeof AdminSubjectsIndexRouteImport
+      parentRoute: typeof AdminSubjectsRoute
+    }
     '/app/subjects/$id': {
       id: '/app/subjects/$id'
       path: '/$id'
@@ -358,15 +1024,175 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLessonChapterIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/users/$id': {
+      id: '/api/users/$id'
+      path: '/$id'
+      fullPath: '/api/users/$id'
+      preLoaderRoute: typeof ApiUsersIdRouteImport
+      parentRoute: typeof ApiUsersRoute
+    }
+    '/api/user-badges/$id': {
+      id: '/api/user-badges/$id'
+      path: '/$id'
+      fullPath: '/api/user-badges/$id'
+      preLoaderRoute: typeof ApiUserBadgesIdRouteImport
+      parentRoute: typeof ApiUserBadgesRoute
+    }
+    '/api/subscriptions/$id': {
+      id: '/api/subscriptions/$id'
+      path: '/$id'
+      fullPath: '/api/subscriptions/$id'
+      preLoaderRoute: typeof ApiSubscriptionsIdRouteImport
+      parentRoute: typeof ApiSubscriptionsRoute
+    }
+    '/api/subjects/$id': {
+      id: '/api/subjects/$id'
+      path: '/$id'
+      fullPath: '/api/subjects/$id'
+      preLoaderRoute: typeof ApiSubjectsIdRouteImport
+      parentRoute: typeof ApiSubjectsRoute
+    }
+    '/api/study-guides/$id': {
+      id: '/api/study-guides/$id'
+      path: '/$id'
+      fullPath: '/api/study-guides/$id'
+      preLoaderRoute: typeof ApiStudyGuidesIdRouteImport
+      parentRoute: typeof ApiStudyGuidesRoute
+    }
+    '/api/study-guide-definitions/$id': {
+      id: '/api/study-guide-definitions/$id'
+      path: '/$id'
+      fullPath: '/api/study-guide-definitions/$id'
+      preLoaderRoute: typeof ApiStudyGuideDefinitionsIdRouteImport
+      parentRoute: typeof ApiStudyGuideDefinitionsRoute
+    }
+    '/api/quiz-attempts/$id': {
+      id: '/api/quiz-attempts/$id'
+      path: '/$id'
+      fullPath: '/api/quiz-attempts/$id'
+      preLoaderRoute: typeof ApiQuizAttemptsIdRouteImport
+      parentRoute: typeof ApiQuizAttemptsRoute
+    }
+    '/api/quiz-answers/$id': {
+      id: '/api/quiz-answers/$id'
+      path: '/$id'
+      fullPath: '/api/quiz-answers/$id'
+      preLoaderRoute: typeof ApiQuizAnswersIdRouteImport
+      parentRoute: typeof ApiQuizAnswersRoute
+    }
+    '/api/questions/$id': {
+      id: '/api/questions/$id'
+      path: '/$id'
+      fullPath: '/api/questions/$id'
+      preLoaderRoute: typeof ApiQuestionsIdRouteImport
+      parentRoute: typeof ApiQuestionsRoute
+    }
+    '/api/lessons/$id': {
+      id: '/api/lessons/$id'
+      path: '/$id'
+      fullPath: '/api/lessons/$id'
+      preLoaderRoute: typeof ApiLessonsIdRouteImport
+      parentRoute: typeof ApiLessonsRoute
+    }
+    '/api/lesson-sections/$id': {
+      id: '/api/lesson-sections/$id'
+      path: '/$id'
+      fullPath: '/api/lesson-sections/$id'
+      preLoaderRoute: typeof ApiLessonSectionsIdRouteImport
+      parentRoute: typeof ApiLessonSectionsRoute
+    }
+    '/api/daily-stats/$id': {
+      id: '/api/daily-stats/$id'
+      path: '/$id'
+      fullPath: '/api/daily-stats/$id'
+      preLoaderRoute: typeof ApiDailyStatsIdRouteImport
+      parentRoute: typeof ApiDailyStatsRoute
+    }
+    '/api/chapters/$id': {
+      id: '/api/chapters/$id'
+      path: '/$id'
+      fullPath: '/api/chapters/$id'
+      preLoaderRoute: typeof ApiChaptersIdRouteImport
+      parentRoute: typeof ApiChaptersRoute
+    }
+    '/api/chapter-progress/$id': {
+      id: '/api/chapter-progress/$id'
+      path: '/$id'
+      fullPath: '/api/chapter-progress/$id'
+      preLoaderRoute: typeof ApiChapterProgressIdRouteImport
+      parentRoute: typeof ApiChapterProgressRoute
+    }
+    '/api/badges/$id': {
+      id: '/api/badges/$id'
+      path: '/$id'
+      fullPath: '/api/badges/$id'
+      preLoaderRoute: typeof ApiBadgesIdRouteImport
+      parentRoute: typeof ApiBadgesRoute
+    }
+    '/api/activities/$id': {
+      id: '/api/activities/$id'
+      path: '/$id'
+      fullPath: '/api/activities/$id'
+      preLoaderRoute: typeof ApiActivitiesIdRouteImport
+      parentRoute: typeof ApiActivitiesRoute
+    }
+    '/admin/subjects/$id': {
+      id: '/admin/subjects/$id'
+      path: '/$id'
+      fullPath: '/admin/subjects/$id'
+      preLoaderRoute: typeof AdminSubjectsIdRouteImport
+      parentRoute: typeof AdminSubjectsRoute
+    }
+    '/admin/chapters/$id': {
+      id: '/admin/chapters/$id'
+      path: '/chapters/$id'
+      fullPath: '/admin/chapters/$id'
+      preLoaderRoute: typeof AdminChaptersIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminSubjectsRouteChildren {
+  AdminSubjectsIdRoute: typeof AdminSubjectsIdRoute
+  AdminSubjectsIndexRoute: typeof AdminSubjectsIndexRoute
+}
+
+const AdminSubjectsRouteChildren: AdminSubjectsRouteChildren = {
+  AdminSubjectsIdRoute: AdminSubjectsIdRoute,
+  AdminSubjectsIndexRoute: AdminSubjectsIndexRoute,
+}
+
+const AdminSubjectsRouteWithChildren = AdminSubjectsRoute._addFileChildren(
+  AdminSubjectsRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminBadgesRoute: typeof AdminBadgesRoute
+  AdminSubjectsRoute: typeof AdminSubjectsRouteWithChildren
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminChaptersIdRoute: typeof AdminChaptersIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBadgesRoute: AdminBadgesRoute,
+  AdminSubjectsRoute: AdminSubjectsRouteWithChildren,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminChaptersIdRoute: AdminChaptersIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface AppSubjectsRouteChildren {
   AppSubjectsIdRoute: typeof AppSubjectsIdRoute
+  AppSubjectsIndexRoute: typeof AppSubjectsIndexRoute
 }
 
 const AppSubjectsRouteChildren: AppSubjectsRouteChildren = {
   AppSubjectsIdRoute: AppSubjectsIdRoute,
+  AppSubjectsIndexRoute: AppSubjectsIndexRoute,
 }
 
 const AppSubjectsRouteWithChildren = AppSubjectsRoute._addFileChildren(
@@ -403,12 +1229,220 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface ApiActivitiesRouteChildren {
+  ApiActivitiesIdRoute: typeof ApiActivitiesIdRoute
+}
+
+const ApiActivitiesRouteChildren: ApiActivitiesRouteChildren = {
+  ApiActivitiesIdRoute: ApiActivitiesIdRoute,
+}
+
+const ApiActivitiesRouteWithChildren = ApiActivitiesRoute._addFileChildren(
+  ApiActivitiesRouteChildren,
+)
+
+interface ApiBadgesRouteChildren {
+  ApiBadgesIdRoute: typeof ApiBadgesIdRoute
+}
+
+const ApiBadgesRouteChildren: ApiBadgesRouteChildren = {
+  ApiBadgesIdRoute: ApiBadgesIdRoute,
+}
+
+const ApiBadgesRouteWithChildren = ApiBadgesRoute._addFileChildren(
+  ApiBadgesRouteChildren,
+)
+
+interface ApiChapterProgressRouteChildren {
+  ApiChapterProgressIdRoute: typeof ApiChapterProgressIdRoute
+}
+
+const ApiChapterProgressRouteChildren: ApiChapterProgressRouteChildren = {
+  ApiChapterProgressIdRoute: ApiChapterProgressIdRoute,
+}
+
+const ApiChapterProgressRouteWithChildren =
+  ApiChapterProgressRoute._addFileChildren(ApiChapterProgressRouteChildren)
+
+interface ApiChaptersRouteChildren {
+  ApiChaptersIdRoute: typeof ApiChaptersIdRoute
+}
+
+const ApiChaptersRouteChildren: ApiChaptersRouteChildren = {
+  ApiChaptersIdRoute: ApiChaptersIdRoute,
+}
+
+const ApiChaptersRouteWithChildren = ApiChaptersRoute._addFileChildren(
+  ApiChaptersRouteChildren,
+)
+
+interface ApiDailyStatsRouteChildren {
+  ApiDailyStatsIdRoute: typeof ApiDailyStatsIdRoute
+}
+
+const ApiDailyStatsRouteChildren: ApiDailyStatsRouteChildren = {
+  ApiDailyStatsIdRoute: ApiDailyStatsIdRoute,
+}
+
+const ApiDailyStatsRouteWithChildren = ApiDailyStatsRoute._addFileChildren(
+  ApiDailyStatsRouteChildren,
+)
+
+interface ApiLessonSectionsRouteChildren {
+  ApiLessonSectionsIdRoute: typeof ApiLessonSectionsIdRoute
+}
+
+const ApiLessonSectionsRouteChildren: ApiLessonSectionsRouteChildren = {
+  ApiLessonSectionsIdRoute: ApiLessonSectionsIdRoute,
+}
+
+const ApiLessonSectionsRouteWithChildren =
+  ApiLessonSectionsRoute._addFileChildren(ApiLessonSectionsRouteChildren)
+
+interface ApiLessonsRouteChildren {
+  ApiLessonsIdRoute: typeof ApiLessonsIdRoute
+}
+
+const ApiLessonsRouteChildren: ApiLessonsRouteChildren = {
+  ApiLessonsIdRoute: ApiLessonsIdRoute,
+}
+
+const ApiLessonsRouteWithChildren = ApiLessonsRoute._addFileChildren(
+  ApiLessonsRouteChildren,
+)
+
+interface ApiQuestionsRouteChildren {
+  ApiQuestionsIdRoute: typeof ApiQuestionsIdRoute
+}
+
+const ApiQuestionsRouteChildren: ApiQuestionsRouteChildren = {
+  ApiQuestionsIdRoute: ApiQuestionsIdRoute,
+}
+
+const ApiQuestionsRouteWithChildren = ApiQuestionsRoute._addFileChildren(
+  ApiQuestionsRouteChildren,
+)
+
+interface ApiQuizAnswersRouteChildren {
+  ApiQuizAnswersIdRoute: typeof ApiQuizAnswersIdRoute
+}
+
+const ApiQuizAnswersRouteChildren: ApiQuizAnswersRouteChildren = {
+  ApiQuizAnswersIdRoute: ApiQuizAnswersIdRoute,
+}
+
+const ApiQuizAnswersRouteWithChildren = ApiQuizAnswersRoute._addFileChildren(
+  ApiQuizAnswersRouteChildren,
+)
+
+interface ApiQuizAttemptsRouteChildren {
+  ApiQuizAttemptsIdRoute: typeof ApiQuizAttemptsIdRoute
+}
+
+const ApiQuizAttemptsRouteChildren: ApiQuizAttemptsRouteChildren = {
+  ApiQuizAttemptsIdRoute: ApiQuizAttemptsIdRoute,
+}
+
+const ApiQuizAttemptsRouteWithChildren = ApiQuizAttemptsRoute._addFileChildren(
+  ApiQuizAttemptsRouteChildren,
+)
+
+interface ApiStudyGuideDefinitionsRouteChildren {
+  ApiStudyGuideDefinitionsIdRoute: typeof ApiStudyGuideDefinitionsIdRoute
+}
+
+const ApiStudyGuideDefinitionsRouteChildren: ApiStudyGuideDefinitionsRouteChildren =
+  {
+    ApiStudyGuideDefinitionsIdRoute: ApiStudyGuideDefinitionsIdRoute,
+  }
+
+const ApiStudyGuideDefinitionsRouteWithChildren =
+  ApiStudyGuideDefinitionsRoute._addFileChildren(
+    ApiStudyGuideDefinitionsRouteChildren,
+  )
+
+interface ApiStudyGuidesRouteChildren {
+  ApiStudyGuidesIdRoute: typeof ApiStudyGuidesIdRoute
+}
+
+const ApiStudyGuidesRouteChildren: ApiStudyGuidesRouteChildren = {
+  ApiStudyGuidesIdRoute: ApiStudyGuidesIdRoute,
+}
+
+const ApiStudyGuidesRouteWithChildren = ApiStudyGuidesRoute._addFileChildren(
+  ApiStudyGuidesRouteChildren,
+)
+
+interface ApiSubjectsRouteChildren {
+  ApiSubjectsIdRoute: typeof ApiSubjectsIdRoute
+}
+
+const ApiSubjectsRouteChildren: ApiSubjectsRouteChildren = {
+  ApiSubjectsIdRoute: ApiSubjectsIdRoute,
+}
+
+const ApiSubjectsRouteWithChildren = ApiSubjectsRoute._addFileChildren(
+  ApiSubjectsRouteChildren,
+)
+
+interface ApiSubscriptionsRouteChildren {
+  ApiSubscriptionsIdRoute: typeof ApiSubscriptionsIdRoute
+}
+
+const ApiSubscriptionsRouteChildren: ApiSubscriptionsRouteChildren = {
+  ApiSubscriptionsIdRoute: ApiSubscriptionsIdRoute,
+}
+
+const ApiSubscriptionsRouteWithChildren =
+  ApiSubscriptionsRoute._addFileChildren(ApiSubscriptionsRouteChildren)
+
+interface ApiUserBadgesRouteChildren {
+  ApiUserBadgesIdRoute: typeof ApiUserBadgesIdRoute
+}
+
+const ApiUserBadgesRouteChildren: ApiUserBadgesRouteChildren = {
+  ApiUserBadgesIdRoute: ApiUserBadgesIdRoute,
+}
+
+const ApiUserBadgesRouteWithChildren = ApiUserBadgesRoute._addFileChildren(
+  ApiUserBadgesRouteChildren,
+)
+
+interface ApiUsersRouteChildren {
+  ApiUsersIdRoute: typeof ApiUsersIdRoute
+}
+
+const ApiUsersRouteChildren: ApiUsersRouteChildren = {
+  ApiUsersIdRoute: ApiUsersIdRoute,
+}
+
+const ApiUsersRouteWithChildren = ApiUsersRoute._addFileChildren(
+  ApiUsersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ApiActivitiesRoute: ApiActivitiesRouteWithChildren,
+  ApiBadgesRoute: ApiBadgesRouteWithChildren,
+  ApiChapterProgressRoute: ApiChapterProgressRouteWithChildren,
+  ApiChaptersRoute: ApiChaptersRouteWithChildren,
+  ApiDailyStatsRoute: ApiDailyStatsRouteWithChildren,
+  ApiLessonSectionsRoute: ApiLessonSectionsRouteWithChildren,
+  ApiLessonsRoute: ApiLessonsRouteWithChildren,
+  ApiQuestionsRoute: ApiQuestionsRouteWithChildren,
+  ApiQuizAnswersRoute: ApiQuizAnswersRouteWithChildren,
+  ApiQuizAttemptsRoute: ApiQuizAttemptsRouteWithChildren,
+  ApiStudyGuideDefinitionsRoute: ApiStudyGuideDefinitionsRouteWithChildren,
+  ApiStudyGuidesRoute: ApiStudyGuidesRouteWithChildren,
+  ApiSubjectsRoute: ApiSubjectsRouteWithChildren,
+  ApiSubscriptionsRoute: ApiSubscriptionsRouteWithChildren,
+  ApiUserBadgesRoute: ApiUserBadgesRouteWithChildren,
+  ApiUsersRoute: ApiUsersRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

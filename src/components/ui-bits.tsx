@@ -51,7 +51,7 @@ export function ProgressBar({ value, className = "" }: { value: number; classNam
 export function PageHeader({ title, subtitle, children }: { title: string; subtitle?: string; children?: ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -10 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8"
     >

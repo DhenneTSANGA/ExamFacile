@@ -1,0 +1,314 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum BacSeries {
+  A1
+  A2
+  C
+  D
+  E
+  F
+  G
+  H
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum ActivityType {
+  QUIZ
+  LESSON
+  BADGE
+  CHAPTER
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// ─── Auth & profil ───────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  avatar        String    @default("")
+  role          UserRole  @default(USER)
+  series        BacSeries @default(A1)
+  level         Int      @default(1)
+  points        Int      @default(0)
+  streak        Int      @default(0)
+  quizCompleted Int      @default(0)
+  lastActiveAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  chapterProgress ChapterProgress[]
+  quizAttempts    QuizAttempt[]
+  userBadges      UserBadge[]
+  activities      Activity[]
+  dailyStats      DailyStat[]
+  subscription    Subscription?
+
+  @@index([points(sort: Desc)])
+  @@map("users")
+}
+
+model Subscription {
+  id        String             @id @default(cuid())
+  userId    String             @unique
+  plan      SubscriptionPlan     @default(FREE)
+  status    SubscriptionStatus   @default(ACTIVE)
+  startedAt DateTime           @default(now())
+  expiresAt DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// ─── Contenu pédagogique ─────────────────────────────────────────────────────
+
+model Subject {
+  id            String   @id // ex: "math", "philo"
+  name          String
+  icon          String   // nom de l'icône Lucide, ex: "Brain"
+  color         String
+  gradient      String
+  description   String
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  chapters Chapter[]
+
+  @@map("subjects")
+}
+
+model Chapter {
+  id        String   @id // ex: "math-1"
+  subjectId String
+  title     String
+  duration  Int      // durée estimée en minutes
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subject       Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  lesson        Lesson?
+  studyGuide    StudyGuide?
+  questions     Question[]
+  progress      ChapterProgress[]
+  quizAttempts  QuizAttempt[]
+
+  @@index([subjectId])
+  @@map("chapters")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  chapterId   String   @unique
+  readingTime Int      // minutes
+  intro       String
+  summary     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chapter  Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  sections LessonSection[]
+
+  @@map("lessons")
+}
+
+model LessonSection {
+  id       String @id @default(cuid())
+  lessonId String
+  heading  String
+  body     String
+  sortOrder Int   @default(0)
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+  @@map("lesson_sections")
+}
+
+model StudyGuide {
+  id              String   @id @default(cuid())
+  chapterId       String   @unique
+  keyConcepts     Json // string[]
+  examTips        Json // string[]
+  commonMistakes  Json // string[]
+  importantFacts  Json // string[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  chapter     Chapter              @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  definitions StudyGuideDefinition[]
+
+  @@map("study_guides")
+}
+
+model StudyGuideDefinition {
+  id           String @id @default(cuid())
+  studyGuideId String
+  term         String
+  definition   String
+  sortOrder    Int    @default(0)
+
+  studyGuide StudyGuide @relation(fields: [studyGuideId], references: [id], onDelete: Cascade)
+
+  @@index([studyGuideId])
+  @@map("study_guide_definitions")
+}
+
+// ─── Quiz ────────────────────────────────────────────────────────────────────
+
+model Question {
+  id           String   @id @default(cuid())
+  chapterId    String
+  question     String
+  options      Json   // string[] — 4 choix (A, B, C, D)
+  correctIndex Int    // index 0-3
+  explanation  String
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  chapter Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([chapterId])
+  @@map("questions")
+}
+
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  chapterId      String
+  score          Int
+  totalQuestions Int
+  timeSeconds    Int
+  completedAt    DateTime @default(now())
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+
+  @@index([userId])
+  @@index([chapterId])
+  @@index([completedAt(sort: Desc)])
+  @@map("quiz_attempts")
+}
+
+model QuizAnswer {
+  id            String  @id @default(cuid())
+  attemptId     String
+  questionId    String
+  selectedIndex Int     // -1 si non répondu
+  isCorrect     Boolean
+
+  attempt  QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@map("quiz_answers")
+}
+
+// ─── Progression ─────────────────────────────────────────────────────────────
+
+model ChapterProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  chapterId   String
+  progress    Int       @default(0) // 0-100
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([userId])
+  @@map("chapter_progress")
+}
+
+// ─── Gamification ────────────────────────────────────────────────────────────
+
+model Badge {
+  id          String @id // ex: "motivated", "expert"
+  name        String
+  emoji       String
+  description String
+  sortOrder   Int    @default(0)
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id         String    @id @default(cuid())
+  userId     String
+  badgeId    String
+  progress   Int       @default(0) // 0-100, 100 = débloqué
+  unlockedAt DateTime?
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@map("user_badges")
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  userId    String
+  type      ActivityType
+  title     String
+  detail    String?      // ex: "9/10", "+50 XP"
+  icon      String?
+  metadata  Json?
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("activities")
+}
+
+model DailyStat {
+  id      String   @id @default(cuid())
+  userId  String
+  date    DateTime
+  points  Int      @default(0)
+  minutes Int      @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@map("daily_stats")
+}

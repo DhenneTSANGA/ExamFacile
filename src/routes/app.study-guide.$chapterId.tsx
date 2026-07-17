@@ -1,29 +1,31 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowLeft, BookOpen, Lightbulb, AlertTriangle, Info } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { getChapter, studyGuide } from "@/lib/mockData";
+import { useEffect, useState } from "react";
+import { getStudyGuideFn } from "@/fns/content.server";
 import { Card } from "@/components/ui-bits";
 
 export const Route = createFileRoute("/app/study-guide/$chapterId")({
-  head: ({ params }) => ({ meta: [{ title: `Fiche de révision : ${getChapter(params.chapterId)?.title ?? ""} — ExamFacile` }] }),
+  loader: ({ params }) => getStudyGuideFn({ data: { chapterId: params.chapterId } }),
+  head: ({ loaderData }) => ({ meta: [{ title: `Fiche : ${loaderData?.chapter.title ?? ""} — ExamFacile` }] }),
   component: StudyGuidePage,
 });
 
 function StudyGuidePage() {
   const { chapterId } = useParams({ from: "/app/study-guide/$chapterId" });
-  const chapter = getChapter(chapterId);
-  const guide = useMemo(() => (chapter ? studyGuide(chapter) : null), [chapter]);
+  const data = Route.useLoaderData();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), 1800);
+    const t = setTimeout(() => setReady(true), 1200);
     return () => clearTimeout(t);
-  }, []);
+  }, [chapterId]);
 
-  if (!chapter || !guide) {
+  if (!data) {
     return <div className="p-8 text-center text-muted-foreground">Chapitre introuvable.</div>;
   }
+
+  const { chapter, guide } = data;
 
   if (!ready) {
     return (
@@ -32,35 +34,24 @@ function StudyGuidePage() {
           <Sparkles className="w-7 h-7" />
         </motion.div>
         <h1 className="text-3xl font-bold font-display mb-3">Génération de la fiche…</h1>
-        <p className="text-muted-foreground mb-8">Notre IA lit le chapitre et prépare vos notes.</p>
-        <div className="space-y-2 max-w-sm mx-auto">
-          {["Lecture du chapitre", "Extraction des notions clés", "Rédaction des conseils"].map((s, i) => (
-            <motion.div key={s} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.4 }} className="flex items-center gap-2 text-sm text-left p-3 rounded-xl bg-card border border-border">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> {s}
-            </motion.div>
-          ))}
-        </div>
+        <p className="text-muted-foreground">Chargement depuis la base de contenu partagé.</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Link to="/app/lesson/$chapterId" params={{ chapterId: chapter.id }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="w-4 h-4" /> Retour à la leçon</Link>
+      <Link to="/app/lesson/$chapterId" params={{ chapterId }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="w-4 h-4" /> Retour à la leçon</Link>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm font-medium mb-4">
-          <Sparkles className="w-4 h-4 text-primary" /> Générée par IA · rien que pour vous
+          <Sparkles className="w-4 h-4 text-primary" /> Fiche de révision
         </div>
         <h1 className="text-4xl font-bold font-display mb-2">{chapter.title}</h1>
-        <p className="text-muted-foreground mb-8">Notes de révision personnalisées à partir du contenu de la leçon.</p>
+        <p className="text-muted-foreground mb-8">Notes de révision à partir du contenu du chapitre.</p>
 
         <Section icon={BookOpen} title="Notions clés" color="from-blue-500 to-indigo-600">
-          <ul className="space-y-2">
-            {guide.keyConcepts.map((c, i) => (
-              <li key={i} className="flex gap-3"><span className="text-primary font-bold">→</span><span>{c}</span></li>
-            ))}
-          </ul>
+          <ul className="space-y-2">{guide.keyConcepts.map((c, i) => <li key={i} className="flex gap-3"><span className="text-primary font-bold">→</span><span>{c}</span></li>)}</ul>
         </Section>
 
         <Section icon={Info} title="Définitions" color="from-emerald-500 to-teal-600">
@@ -75,30 +66,18 @@ function StudyGuidePage() {
         </Section>
 
         <Section icon={Lightbulb} title="Conseils pour le bac" color="from-amber-500 to-orange-600">
-          <ul className="space-y-2">
-            {guide.examTips.map((t, i) => (
-              <li key={i} className="flex gap-3"><span>💡</span><span>{t}</span></li>
-            ))}
-          </ul>
+          <ul className="space-y-2">{guide.examTips.map((t, i) => <li key={i} className="flex gap-3"><span>💡</span><span>{t}</span></li>)}</ul>
         </Section>
 
         <Section icon={AlertTriangle} title="Erreurs fréquentes" color="from-red-500 to-rose-600">
-          <ul className="space-y-2">
-            {guide.commonMistakes.map((m, i) => (
-              <li key={i} className="flex gap-3"><span>⚠️</span><span>{m}</span></li>
-            ))}
-          </ul>
+          <ul className="space-y-2">{guide.commonMistakes.map((m, i) => <li key={i} className="flex gap-3"><span>⚠️</span><span>{m}</span></li>)}</ul>
         </Section>
 
         <Section icon={Sparkles} title="À savoir absolument" color="from-purple-500 to-fuchsia-600">
-          <ul className="space-y-2">
-            {guide.importantFacts.map((f, i) => (
-              <li key={i} className="flex gap-3"><span>⭐</span><span>{f}</span></li>
-            ))}
-          </ul>
+          <ul className="space-y-2">{guide.importantFacts.map((f, i) => <li key={i} className="flex gap-3"><span>⭐</span><span>{f}</span></li>)}</ul>
         </Section>
 
-        <Link to="/app/quiz/$chapterId" params={{ chapterId: chapter.id }}>
+        <Link to="/app/quiz/$chapterId" params={{ chapterId }}>
           <button className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl gradient-brand text-white font-semibold shadow-glow hover:scale-[1.01] transition">
             Tester mes connaissances avec un quiz
           </button>

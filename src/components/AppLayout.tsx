@@ -1,10 +1,10 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, Outlet, useRouterState, useRouteContext } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, BookOpen, Trophy, Award, User, Sparkles, Flame, Menu, X,
+  LayoutDashboard, BookOpen, Trophy, Award, User, Sparkles, Flame, Menu, X, Shield,
 } from "lucide-react";
 import { useState } from "react";
-import { mockUser, levelName } from "@/lib/mockData";
+import { levelName } from "@/lib/gamification";
 
 const nav = [
   { to: "/app/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -16,12 +16,12 @@ const nav = [
 ];
 
 export function AppLayout() {
+  const { user } = useRouteContext({ from: "/app" });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex w-full">
-      {/* Desktop sidebar */}
       <aside className="hidden lg:flex w-72 flex-col border-r border-border bg-card/60 backdrop-blur-xl p-6 sticky top-0 h-screen">
         <Link to="/" className="flex items-center gap-2 mb-10">
           <div className="w-10 h-10 rounded-xl gradient-brand grid place-items-center text-white font-bold shadow-glow">E</div>
@@ -30,17 +30,15 @@ export function AppLayout() {
 
         <div className="rounded-2xl p-4 mb-6 gradient-brand text-white shadow-glow">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/20 grid place-items-center font-bold text-lg">
-              {mockUser.avatar}
-            </div>
+            <div className="w-12 h-12 rounded-full bg-white/20 grid place-items-center font-bold text-lg">{user.avatar}</div>
             <div>
-              <div className="font-semibold">{mockUser.name}</div>
-              <div className="text-xs opacity-90">Niv. {mockUser.level} · {levelName(mockUser.level)}</div>
+              <div className="font-semibold">{user.name}</div>
+              <div className="text-xs opacity-90">Niv. {user.level} · {levelName(user.level)}</div>
             </div>
           </div>
           <div className="flex items-center justify-between mt-4 text-sm">
-            <div className="flex items-center gap-1"><Flame className="w-4 h-4" /> {mockUser.streak} j</div>
-            <div className="font-bold">{mockUser.points.toLocaleString("fr-FR")} XP</div>
+            <div className="flex items-center gap-1"><Flame className="w-4 h-4" /> {user.streak} j</div>
+            <div className="font-bold">{user.points.toLocaleString("fr-FR")} XP</div>
           </div>
         </div>
 
@@ -49,18 +47,21 @@ export function AppLayout() {
             const active = pathname.startsWith(item.to);
             return (
               <Link key={item.to} to={item.to} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all relative ${active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}>
-                {active && (
-                  <motion.div layoutId="navActive" className="absolute inset-0 rounded-xl gradient-brand -z-0" transition={{ type: "spring", stiffness: 300, damping: 30 }} />
-                )}
+                {active && <motion.div layoutId="navActive" className="absolute inset-0 rounded-xl gradient-brand -z-0" transition={{ type: "spring", stiffness: 300, damping: 30 }} />}
                 <item.icon className="w-5 h-5 relative z-10" />
                 <span className="relative z-10">{item.label}</span>
               </Link>
             );
           })}
+          {user.role === "ADMIN" && (
+            <Link to="/admin" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${pathname.startsWith("/admin") ? "bg-amber-500/15 text-amber-700" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}>
+              <Shield className="w-5 h-5" />
+              Administration
+            </Link>
+          )}
         </nav>
       </aside>
 
-      {/* Mobile top bar */}
       <div className="lg:hidden fixed top-0 inset-x-0 z-40 glass border-b border-border/50 flex items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl gradient-brand grid place-items-center text-white font-bold">E</div>
@@ -81,14 +82,12 @@ export function AppLayout() {
         </motion.div>
       )}
 
-      {/* Main */}
       <main className="flex-1 min-w-0 pt-16 lg:pt-0 pb-24 lg:pb-0">
         <div className="p-4 md:p-8 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>
 
-      {/* Mobile bottom nav */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-border/50 flex justify-around py-2">
         {nav.slice(0, 5).map((item) => {
           const active = pathname.startsWith(item.to);

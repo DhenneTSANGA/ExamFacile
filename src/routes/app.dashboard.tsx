@@ -2,32 +2,34 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Flame, Trophy, Target, TrendingUp, ChevronRight, Zap } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, BarChart, Bar, CartesianGrid } from "recharts";
-import { mockUser, weeklyProgress, recentActivity, subjects, leaderboard, levelName } from "@/lib/mockData";
+import { levelName, xpToNextLevel } from "@/lib/gamification";
+import { resolveSubjectIcon } from "@/lib/icons";
+import { getDashboardFn } from "@/fns/progress.server";
 import { Card, PageHeader, ProgressBar } from "@/components/ui-bits";
 
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({ meta: [{ title: "Tableau de bord — ExamFacile" }] }),
+  loader: () => getDashboardFn(),
   component: Dashboard,
 });
 
 function Dashboard() {
-  const xpToNext = 5000;
-  const xpProgress = (mockUser.points / xpToNext) * 100;
+  const { user, weeklyProgress, recentActivity, subjects, rank, leaderboardPreview, weeklyXp } = Route.useLoaderData();
+  const xpToNext = xpToNextLevel(user.level);
+  const xpProgress = (user.points / xpToNext) * 100;
 
   return (
     <div className="space-y-6">
-      <PageHeader title={`Bon retour, ${mockUser.name} 👋`} subtitle="Voici votre progression aujourd'hui." />
+      <PageHeader title={`Bon retour, ${user.name} 👋`} subtitle="Voici votre progression aujourd'hui." />
 
-      {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Zap} label="XP total" value={mockUser.points.toLocaleString("fr-FR")} color="from-blue-500 to-indigo-600" />
-        <StatCard icon={Flame} label="Jours de série" value={`${mockUser.streak} 🔥`} color="from-orange-500 to-red-500" />
-        <StatCard icon={Target} label="Quiz réalisés" value={mockUser.quizCompleted} color="from-emerald-500 to-teal-600" />
-        <StatCard icon={Trophy} label="Rang national" value="#5" color="from-purple-500 to-fuchsia-600" />
+        <StatCard icon={Zap} label="XP total" value={user.points.toLocaleString("fr-FR")} color="from-blue-500 to-indigo-600" />
+        <StatCard icon={Flame} label="Jours de série" value={`${user.streak} 🔥`} color="from-orange-500 to-red-500" />
+        <StatCard icon={Target} label="Quiz réalisés" value={user.quizCompleted} color="from-emerald-500 to-teal-600" />
+        <StatCard icon={Trophy} label="Rang national" value={`#${rank}`} color="from-purple-500 to-fuchsia-600" />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Progress overview */}
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -35,8 +37,7 @@ function Dashboard() {
               <p className="text-sm text-muted-foreground">XP gagnés cette semaine</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold gradient-text">3 250 XP</div>
-              <div className="text-xs text-muted-foreground"><TrendingUp className="w-3 h-3 inline" /> +18 % vs semaine dernière</div>
+              <div className="text-2xl font-bold gradient-text">{weeklyXp.toLocaleString("fr-FR")} XP</div>
             </div>
           </div>
           <div className="h-48">
@@ -56,58 +57,52 @@ function Dashboard() {
           </div>
         </Card>
 
-        {/* Level progress */}
         <Card className="p-6 gradient-brand text-white shadow-glow">
           <div className="text-sm opacity-80">Niveau actuel</div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-5xl font-bold font-display">{mockUser.level}</span>
-            <span className="opacity-80">{levelName(mockUser.level)}</span>
+            <span className="text-5xl font-bold font-display">{user.level}</span>
+            <span className="opacity-80">{levelName(user.level)}</span>
           </div>
-          <p className="text-sm opacity-80 mb-4">{(xpToNext - mockUser.points).toLocaleString("fr-FR")} XP avant le niveau {mockUser.level + 1}</p>
+          <p className="text-sm opacity-80 mb-4">{Math.max(0, xpToNext - user.points).toLocaleString("fr-FR")} XP avant le niveau {user.level + 1}</p>
           <div className="h-3 bg-white/20 rounded-full overflow-hidden mb-6">
-            <motion.div initial={{ width: 0 }} animate={{ width: `${xpProgress}%` }} transition={{ duration: 1 }} className="h-full bg-white rounded-full" />
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            {["Débutant", "Expert", "Champion"].map((l, i) => (
-              <div key={l} className={`p-2 rounded-lg ${i === 1 ? "bg-white/25" : "bg-white/10"}`}>
-                <div className="font-semibold">Niv. {[1, 10, 20][i]}</div>
-                <div className="opacity-80">{l}</div>
-              </div>
-            ))}
+            <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, xpProgress)}%` }} transition={{ duration: 1 }} className="h-full bg-white rounded-full" />
           </div>
         </Card>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Subjects */}
         <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg">Continuer l'apprentissage</h3>
             <Link to="/app/subjects" className="text-sm text-primary font-medium flex items-center gap-1 hover:underline">Toutes les matières <ChevronRight className="w-4 h-4" /></Link>
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
-            {subjects.slice(0, 4).map((s) => (
-              <Link key={s.id} to="/app/subjects/$id" params={{ id: s.id }} className="group">
-                <div className="p-4 rounded-xl border border-border hover:border-primary hover:shadow-soft transition-all">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${s.gradient} grid place-items-center text-white`}>
-                      <s.icon className="w-5 h-5" />
+            {subjects.slice(0, 4).map((s) => {
+              const Icon = resolveSubjectIcon(s.icon);
+              return (
+                <Link key={s.id} to="/app/subjects/$id" params={{ id: s.id }} className="group">
+                  <div className="p-4 rounded-xl border border-border hover:border-primary hover:shadow-soft transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${s.gradient} grid place-items-center text-white`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <span className="text-sm font-semibold text-muted-foreground">{s.progress}%</span>
                     </div>
-                    <span className="text-sm font-semibold text-muted-foreground">{s.progress}%</span>
+                    <div className="font-semibold text-sm mb-2">{s.name}</div>
+                    <ProgressBar value={s.progress} />
                   </div>
-                  <div className="font-semibold text-sm mb-2">{s.name}</div>
-                  <ProgressBar value={s.progress} />
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </Card>
 
-        {/* Recent activity */}
         <Card className="p-6">
           <h3 className="font-bold text-lg mb-4">Activité récente</h3>
           <div className="space-y-3">
-            {recentActivity.map((a, i) => (
+            {recentActivity.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Aucune activité pour le moment.</p>
+            ) : recentActivity.map((a, i) => (
               <motion.div key={a.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50">
                 <div className="text-2xl">{a.icon}</div>
                 <div className="flex-1 min-w-0">
@@ -122,14 +117,13 @@ function Dashboard() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Leaderboard */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-lg">Votre position au classement</h3>
             <Link to="/app/leaderboard" className="text-sm text-primary font-medium flex items-center gap-1 hover:underline">Tout voir <ChevronRight className="w-4 h-4" /></Link>
           </div>
           <div className="space-y-2">
-            {leaderboard.slice(3, 7).map((e) => (
+            {leaderboardPreview.map((e) => (
               <div key={e.rank} className={`flex items-center gap-3 p-3 rounded-xl ${e.isUser ? "gradient-brand text-white shadow-glow" : "bg-muted/40"}`}>
                 <div className={`w-8 h-8 rounded-lg grid place-items-center text-sm font-bold ${e.isUser ? "bg-white/20" : "bg-card"}`}>{e.rank}</div>
                 <div className="flex-1"><div className="font-semibold text-sm">{e.name}</div><div className={`text-xs ${e.isUser ? "opacity-80" : "text-muted-foreground"}`}>Série {e.series}</div></div>
@@ -139,7 +133,6 @@ function Dashboard() {
           </div>
         </Card>
 
-        {/* Minutes chart */}
         <Card className="p-6">
           <h3 className="font-bold text-lg mb-1">Minutes d'étude</h3>
           <p className="text-sm text-muted-foreground mb-4">Temps passé à apprendre cette semaine</p>

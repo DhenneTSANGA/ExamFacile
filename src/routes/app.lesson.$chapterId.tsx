@@ -1,24 +1,25 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Clock, BookOpen, ArrowLeft, Play, Pause, Sparkles, ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { getChapter, lessonContent, subjects } from "@/lib/mockData";
+import { useEffect, useRef, useState } from "react";
+import { resolveSubjectIcon } from "@/lib/icons";
+import { getChapterLessonFn } from "@/fns/content.server";
+import { completeLessonFn } from "@/fns/progress.server";
 import { Card } from "@/components/ui-bits";
 
 export const Route = createFileRoute("/app/lesson/$chapterId")({
-  head: ({ params }) => ({ meta: [{ title: `${getChapter(params.chapterId)?.title ?? "Leçon"} — ExamFacile` }] }),
+  loader: ({ params }) => getChapterLessonFn({ data: { chapterId: params.chapterId } }),
+  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.lesson.title ?? "Leçon"} — ExamFacile` }] }),
   component: Lesson,
 });
 
 function Lesson() {
   const { chapterId } = useParams({ from: "/app/lesson/$chapterId" });
-  const chapter = getChapter(chapterId);
-  const lesson = useMemo(() => (chapter ? lessonContent(chapter) : null), [chapter]);
-  const subject = chapter ? subjects.find((s) => s.id === chapter.subjectId) : undefined;
-
+  const data = Route.useLoaderData();
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [speed, setSpeed] = useState(1);
+  const [completed, setCompleted] = useState(false);
   const ref = useRef<number | null>(null);
 
   useEffect(() => {
@@ -26,30 +27,38 @@ function Lesson() {
     ref.current = window.setInterval(() => {
       setProgress((p) => {
         const next = p + speed * 0.5;
-        if (next >= 100) { setPlaying(false); return 100; }
+        if (next >= 100) {
+          setPlaying(false);
+          if (!completed && data) {
+            setCompleted(true);
+            completeLessonFn({ data: { chapterId, minutes: data.lesson.readingTime } }).catch(console.error);
+          }
+          return 100;
+        }
         return next;
       });
     }, 100);
     return () => { if (ref.current) clearInterval(ref.current); };
-  }, [playing, speed]);
+  }, [playing, speed, completed, chapterId, data]);
 
-  if (!chapter || !lesson || !subject) {
+  if (!data) {
     return <div className="p-8 text-center text-muted-foreground">Leçon introuvable.</div>;
   }
 
+  const { lesson, subjectId } = data;
+  const SubjectIcon = resolveSubjectIcon("BookOpen");
+
   return (
     <div className="max-w-3xl mx-auto">
-      <Link to="/app/subjects/$id" params={{ id: subject.id }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="w-4 h-4" /> {subject.name}</Link>
+      <Link to="/app/subjects/$id" params={{ id: subjectId }} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"><ArrowLeft className="w-4 h-4" /> Retour aux chapitres</Link>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-          <BookOpen className="w-4 h-4" /> Chapitre · {subject.name}
+          <BookOpen className="w-4 h-4" /> Chapitre · <SubjectIcon className="w-4 h-4 inline" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold font-display mb-4">{lesson.title}</h1>
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
           <span className="inline-flex items-center gap-1"><Clock className="w-4 h-4" /> {lesson.readingTime} min de lecture</span>
-          <span>·</span>
-          <span>Difficulté : Intermédiaire</span>
         </div>
 
         <Card className="p-5 mb-8">
@@ -89,12 +98,12 @@ function Lesson() {
         </Card>
 
         <div className="flex flex-wrap gap-3">
-          <Link to="/app/study-guide/$chapterId" params={{ chapterId: chapter.id }} className="flex-1 min-w-[200px]">
+          <Link to="/app/study-guide/$chapterId" params={{ chapterId }} className="flex-1 min-w-[200px]">
             <button className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-card border border-border font-semibold hover:bg-muted transition">
               <Sparkles className="w-4 h-4" /> Générer la fiche IA
             </button>
           </Link>
-          <Link to="/app/quiz/$chapterId" params={{ chapterId: chapter.id }} className="flex-1 min-w-[200px]">
+          <Link to="/app/quiz/$chapterId" params={{ chapterId }} className="flex-1 min-w-[200px]">
             <button className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl gradient-brand text-white font-semibold shadow-glow hover:scale-[1.02] transition">
               Lancer le quiz <ChevronRight className="w-4 h-4" />
             </button>

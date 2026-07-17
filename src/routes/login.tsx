@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Check } from "lucide-react";
 import { useState } from "react";
 import { GradientButton } from "@/components/ui-bits";
+import { loginFn } from "@/fns/auth.server";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Connexion — ExamFacile" }] }),
@@ -16,12 +17,24 @@ function Login() {
   const [pwd, setPwd] = useState("password");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes("@") || pwd.length < 4) return;
     setLoading(true);
-    setTimeout(() => { setSuccess(true); setTimeout(() => navigate({ to: "/app/dashboard" }), 700); }, 800);
+    setError("");
+    try {
+      await loginFn({ data: { email, password: pwd } });
+      setSuccess(true);
+      setTimeout(() => {
+        navigate({ to: email.toLowerCase().includes("admin@") ? "/admin" : "/app/dashboard" });
+      }, 700);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Connexion impossible.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,15 +43,12 @@ function Login() {
       subtitle="Connectez-vous pour reprendre vos révisions."
       illustration={
         <div className="absolute inset-0 w-full h-full bg-[#0d092c]">
-          <img
-            src="/sign.jpeg"
-            alt="ExamFacile"
-            className="w-full h-full object-cover object-center"
-          />
+          <img src="/sign.jpeg" alt="ExamFacile" className="w-full h-full object-cover object-center" />
         </div>
       }
     >
       <form onSubmit={onSubmit} className="space-y-4">
+        {error && <p className="text-sm text-red-600 bg-red-50 dark:bg-red-950/30 p-3 rounded-xl">{error}</p>}
         <Field icon={Mail} type="email" placeholder="vous@lycee.ga" value={email} onChange={setEmail} />
         <div className="relative">
           <Field icon={Lock} type={showPwd ? "text" : "password"} placeholder="Mot de passe" value={pwd} onChange={setPwd} />
@@ -80,9 +90,7 @@ export function AuthShell({
             {illustration}
             <div className="absolute top-12 left-12 z-10">
               <Link to="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md grid place-items-center font-bold border border-white/20">
-                  E
-                </div>
+                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md grid place-items-center font-bold border border-white/20">E</div>
                 <span className="font-display font-bold text-xl text-white">ExamFacile</span>
               </Link>
             </div>
